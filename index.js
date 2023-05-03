@@ -2,9 +2,9 @@ const dotenv = require('dotenv');
 const setupDB = require("ep-det-core/startup-modules/db");
 const Patient = require("ep-det-core/models/mongoose/patient");
 const amqp = require('amqplib');
-const produceMessages = require('./producer');
-const consumeMessages = require('./consumer');
-const redisService = require('./redisService');
+const produceMessages = require('./rabbitMQ test/producer');
+const consumeMessages = require('./rabbitMQ test/consumer');
+const redisService = require('./services/redisService');
 
 
 //getting some random patient emerngency contact from the database
@@ -15,17 +15,18 @@ async function getPatient() {
 // const emergencyContact = patient.emergencyContact[0];
 const emergencyContact = {
     "name": "John Doe",
-    "phoneNumber": "12345678"
+    "phoneNumber": "12345678900"
 }
-const predictionResult = "Epilepsy detected"
+const predictionResult = "Epilepsy detected";
+
   if(emergencyContact){
       console.log(emergencyContact.name);
   }
   redisService.setContact(emergencyContact.phoneNumber, predictionResult);
 
-  redisService.getContact(emergencyContact.name,(predictionValue) => {
-      console.log(`Prediction value for contact ${emergencyContact.phoneNumber}: ${predictionValue}`);
-    });
+  redisService.getContact(emergencyContact.name);
+
+  //redisService.deleteContact(emergencyContact.phoneNumber);
 
 }
    
