@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "amqplib": "^0.10.3",
+    "bluebird": "^3.7.2",
     "dotenv": "^16.0.3",
     "ep-det-core": "github:Epilepsy-Detection/ep-det-core",
     "express": "^4.18.2",

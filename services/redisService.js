@@ -24,7 +24,7 @@ module.exports.setContact= async(contactNumber, predictionValue)=> {
 module.exports.getContact = async(contactNumber)=> {
 
     const value = await client.get(contactNumber);
-    console.log(`Prediction value for contact number ${contactNumber}: ${value}`);
+    console.log(`Returned Prediction value for contact number ${contactNumber}: ${value}`);
   }
 
 // Delete a contact number with its prediction value

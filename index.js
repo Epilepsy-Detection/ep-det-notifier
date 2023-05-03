@@ -24,7 +24,7 @@ const predictionResult = "Epilepsy detected";
   }
   redisService.setContact(emergencyContact.phoneNumber, predictionResult);
 
-  redisService.getContact(emergencyContact.name);
+  redisService.getContact(emergencyContact.phoneNumber);
 
   //redisService.deleteContact(emergencyContact.phoneNumber);
 
