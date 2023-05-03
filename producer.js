@@ -11,7 +11,7 @@ const rabbitSettings = {
     authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL'],
   };
 
-async function produceMessages() {
+module.exports.produceMessages = async() =>{
     try {
         const connection = await amqp.connect(rabbitSettings);
         if(connection) {
@@ -28,5 +28,3 @@ async function produceMessages() {
         console.error(error);
       }
 }
-
-module.exports = produceMessages;

@@ -1,7 +1,7 @@
 const amqp = require('amqplib');
 
 
-async function consumeMessages() {
+module.exports.consumeMessages = async () => {
     try {
         const connection = await amqp.connect(process.env.AMQP_URL);
         if(connection) {
@@ -19,5 +19,3 @@ async function consumeMessages() {
         console.error(error);
       }
 }
-
-module.exports = consumeMessages;

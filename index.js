@@ -4,12 +4,36 @@ const Patient = require("ep-det-core/models/mongoose/patient");
 const amqp = require('amqplib');
 const produceMessages = require('./producer');
 const consumeMessages = require('./consumer');
-// const mongoose = require("mongoose");
+const redisService = require('./redisService');
+
+
+//getting some random patient emerngency contact from the database
+//hard coding the patient id for now : 641e1b6ecfd4ffd65226a778
+async function getPatient() {
+
+// const patient = await Patient.findById("641e1b6ecfd4ffd65226a778");
+// const emergencyContact = patient.emergencyContact[0];
+const emergencyContact = {
+    "name": "John Doe",
+    "phoneNumber": "12345678"
+}
+const predictionResult = "Epilepsy detected"
+  if(emergencyContact){
+      console.log(emergencyContact.name);
+  }
+  redisService.setContact(emergencyContact.phoneNumber, predictionResult);
+
+  redisService.getContact(emergencyContact.name,(predictionValue) => {
+      console.log(`Prediction value for contact ${emergencyContact.phoneNumber}: ${predictionValue}`);
+    });
+
+}
+   
 
 
 
-dotenv.config({path:'.env'});
-console.log(process.env.MONGO_URI);
-setupDB(console);
-produceMessages();
-consumeMessages();
+
+// setupDB(console);
+getPatient();
+// produceMessages();
+// consumeMessages();
