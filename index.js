@@ -19,14 +19,11 @@ const emergencyContact = {
 }
 const predictionResult = "Epilepsy detected";
 
-  if(emergencyContact){
-      console.log(emergencyContact.name);
-  }
-  redisService.setContact(emergencyContact.phoneNumber, predictionResult);
+redisService.setContact(emergencyContact.phoneNumber, predictionResult);
 
-  redisService.getContact(emergencyContact.phoneNumber);
+redisService.getContact(emergencyContact.phoneNumber);
 
-  //redisService.deleteContact(emergencyContact.phoneNumber);
+//redisService.deleteContact(emergencyContact.phoneNumber);
 
 }
    
