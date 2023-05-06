@@ -15,7 +15,6 @@ module.exports.sendWhatsappMessage = async (phoneNumber,patientId,message) => {
           }
         }
       );
-  
       console.log(`Message sent to ${phoneNumber}. Response:`, response.data);
     } catch (error) {
       console.error(`Error sending message to ${phoneNumber}:`, error.response.data);

@@ -23,9 +23,7 @@ module.exports.consumeMessages = async () => {
         console.log(`Received message: ${message.content.toString()}`);
         
         const messageObj = JSON.parse(message.content.toString());
-
         const pateintId = messageObj.patientId;
-
         const storedValue = await redisService.getPatient(pateintId);
 
         if(storedValue.label == messageObj.label){
@@ -38,12 +36,13 @@ module.exports.consumeMessages = async () => {
           console.log("Patient new value added to redis");
 
           //getting contact number from database and send whatsapp message
-          const patient = await Patient.findById(messageObj.patientId);
+          const patient = await Patient.findById(pateintId);
           
            
           const message = 'Patient '+ patient.firstName + ' has been detected with a sezuire!';
-          sendWhatsappMessage(patient.emergencyContact[0].phone,pateintId,message);
-          sendWhatsappMessage(patient.emergencyContact[1].phone,pateintId,message);
+          for(let i=0; i<patient.emergencyContact.length; i++){
+            sendWhatsappMessage(patient.emergencyContact[i].phone,pateintId,message);
+          }
         }
       },
       {
