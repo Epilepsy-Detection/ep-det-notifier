@@ -24,21 +24,26 @@ module.exports.consumeMessages = async () => {
         
         const messageObj = JSON.parse(message.content.toString());
 
-        const storedValue = await redisService.getPatient(messageObj.patientId);
+        const pateintId = messageObj.patientId;
+
+        const storedValue = await redisService.getPatient(pateintId);
 
         if(storedValue.label == messageObj.label){
           //do nothing.
           console.log("Patient already exists in redis");
         }
         else if(storedValue.label == null || storedValue.label != messageObj.label){
-          redisService.setPatient(messageObj.patientId,messageObj.label, messageObj.timestamp);
+          //set new patient to redis
+          redisService.setPatient(pateintId,messageObj.label, messageObj.timestamp);
           console.log("Patient new value added to redis");
 
           //getting contact number from database and send whatsapp message
-          const emergencyContacts = await Patient.findById(messageObj.patientId).select('emergencyContact');
-
-          sendWhatsappMessage(emergencyContacts.emergencyContact[0].phone,process.env.CLOUD_API_ACCESS_TOKEN,messageObj.patientId);
-          sendWhatsappMessage(emergencyContacts.emergencyContact[1].phone,process.env.CLOUD_API_ACCESS_TOKEN,messageObj.patientId);
+          const patient = await Patient.findById(messageObj.patientId);
+          
+           
+          const message = 'Patient '+ patient.firstName + ' has been detected with a sezuire!';
+          sendWhatsappMessage(patient.emergencyContact[0].phone,pateintId,message);
+          sendWhatsappMessage(patient.emergencyContact[1].phone,pateintId,message);
         }
       },
       {

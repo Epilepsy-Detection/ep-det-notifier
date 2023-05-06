@@ -1,32 +1,19 @@
 const axios = require('axios');
 
-module.exports.sendWhatsappMessage = async (phoneNumber,accessToken,patientId) => {
+module.exports.sendWhatsappMessage = async (phoneNumber,patientId,message) => {
     try {
       const response = await axios.post(
-        `https://graph.facebook.com/v11.0/${process.env.PHONE_NUMBER_ID}/messages?access_token=${accessToken}`,
+        `https://graph.facebook.com/${process.env.CLOUD_API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages?access_token=${process.env.CLOUD_API_ACCESS_TOKEN}`,
         {
-            "messaging_product": "whatsapp",
-            "to": `{${phoneNumber}}`,
-            "type": "text",
-            // "template": {
-            //     "name": "epcare",
-            //     "language": {
-            //         "code": "en_US"
-            //     },
-            //     "components": [
-            //         {
-            //           "type": "body",
-            //           "parameters": [
-            //               {
-            //                   "type": "text",
-            //                   "text": `${patientId}`
-            //               }
-            //           ]}]
-            // },
-            "text": {
-                "body": `Patient ${patientId} has been detected with a seizure.`
-
-        }}
+          messaging_product: "whatsapp",
+          preview_url: false,
+          recipient_type: "individual",
+          to: phoneNumber,
+          type: "text",
+          text: {
+              "body": message
+          }
+        }
       );
   
       console.log(`Message sent to ${phoneNumber}. Response:`, response.data);
