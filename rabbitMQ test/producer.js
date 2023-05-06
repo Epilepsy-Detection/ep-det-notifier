@@ -18,7 +18,15 @@ module.exports.produceMessages = async() =>{
           console.log('Connected to ranbbitMQ successfully');
         }
         const channel = await connection.createChannel();
-        const message = 'Hello world';
+
+        let message = {
+          
+          "patientId": "641e1b6ecfd4ffd65226a778",
+          "label": "C",
+          "timestamp": "2023-05-06T12:00:00.000Z",
+        }
+
+        message = JSON.stringify(message);
         
         await channel.assertQueue(process.env.QUEUE_NAME);
         await channel.sendToQueue(process.env.QUEUE_NAME, Buffer.from(message));

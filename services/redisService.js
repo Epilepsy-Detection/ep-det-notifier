@@ -1,7 +1,7 @@
 const redis = require('redis');
 
 let client;
-//TODO : handle redis logs not shown in the console
+
 async function connect() {
   // Create a Redis client and connect to Redis server
   client = redis.createClient();
@@ -15,22 +15,32 @@ async function connect() {
   console.log('Redis client connected');
 }
 // Set a contact number with its prediction value
-module.exports.setContact= async(contactNumber, predictionValue)=> {
-    await client.set(contactNumber, predictionValue);
-    console.log(`Prediction value for contact number ${contactNumber} is set to ${predictionValue}`);
+module.exports.setPatient= async(profileId, label,timestamp )=> {
+    await client.hSet(
+      profileId,{
+        label: label,
+        timestamp: timestamp
+      }, {EX: 600});
+    console.log(`Prediction value for patient ${profileId} is set to ${label} at ${timestamp}`);
   }
 
 // Get a contact number with its prediction value
-module.exports.getContact = async(contactNumber)=> {
+module.exports.getPatient = async(profileId)=> {
 
-    const value = await client.get(contactNumber);
-    console.log(`Returned Prediction value for contact number ${contactNumber}: ${value}`);
+    const value = await client.hGetAll(profileId);
+    // console.log(`Returned Prediction value for patient ${profileId}: ${value}`);
+    return value;
   }
 
 // Delete a contact number with its prediction value
-module.exports.deleteContact= async (contactNumber) =>{
-    await client.del(contactNumber);
-    console.log(`Prediction value for contact number ${contactNumber} is deleted`);
+module.exports.deletePatient= async (profileId) =>{
+    await client.del(profileId);
+    console.log(`Prediction value for patient ${profileId} is deleted`);
+  }
+
+module.exports.patientExists = async (profileId) => {
+    const result = await client.exists(profileId);
+    return result;
   }
 
 connect();  
