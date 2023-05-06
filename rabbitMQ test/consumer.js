@@ -1,6 +1,8 @@
 const amqp = require("amqplib");
 const redisService = require("../services/redisService");
 const Patient = require("ep-det-core/models/mongoose/patient");
+const {sendWhatsappMessage} = require("../services/whatsappService");
+
 
 module.exports.consumeMessages = async () => {
   try {
@@ -32,9 +34,11 @@ module.exports.consumeMessages = async () => {
           redisService.setPatient(messageObj.patientId,messageObj.label, messageObj.timestamp);
           console.log("Patient new value added to redis");
 
-          //TODO:get contact number from database and send whatsapp message
-          
-          
+          //getting contact number from database and send whatsapp message
+          const emergencyContacts = await Patient.findById(messageObj.patientId).select('emergencyContact');
+
+          sendWhatsappMessage(emergencyContacts.emergencyContact[0].phone,process.env.CLOUD_API_ACCESS_TOKEN,messageObj.patientId);
+          sendWhatsappMessage(emergencyContacts.emergencyContact[1].phone,process.env.CLOUD_API_ACCESS_TOKEN,messageObj.patientId);
         }
       },
       {
