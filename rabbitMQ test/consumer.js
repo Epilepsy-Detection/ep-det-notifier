@@ -1,8 +1,7 @@
 const amqp = require("amqplib");
 const redisService = require("../services/redisService");
 const Patient = require("ep-det-core/models/mongoose/patient");
-const {sendWhatsappMessage} = require("../services/whatsappService");
-
+const { sendWhatsappMessage } = require("../services/whatsappService");
 
 module.exports.consumeMessages = async () => {
   try {
@@ -21,29 +20,32 @@ module.exports.consumeMessages = async () => {
       process.env.QUEUE_NAME,
       async (message) => {
         console.log(`Received message: ${message.content.toString()}`);
-        
+
         const messageObj = JSON.parse(message.content.toString());
         const pateintId = messageObj.patientId;
         const storedValue = await redisService.getPatient(pateintId);
-        console.log(storedValue);
 
-        if(storedValue.label == messageObj.label){
-          //do nothing.
-          console.log("Patient Value already exists and is same as new value ...");
-        }
-        else if(storedValue.label == null || storedValue.label != messageObj.label){
-          //set new patient to redis
-          redisService.setPatient(pateintId,messageObj.label, messageObj.timestamp);
-          console.log("Patient new value added to redis");
+        // Check if value is in redis
+        // if in redis do nothing
+        if (storedValue) return;
+        // if not in redis, set patient id in redis with timer, and send message
 
-          //getting contact number from database and send whatsapp message
-          const patient = await Patient.findById(pateintId);
-          
-           
-          const message = 'Patient '+ patient.firstName + ' has been detected with a sezuire!';
-          for(let i=0; i<patient.emergencyContact.length; i++){
-            sendWhatsappMessage(patient.emergencyContact[i].phone,message);
-          }
+        //set new patient to redis
+        await redisService.setPatient(
+          pateintId,
+          messageObj.label,
+          messageObj.timestamp
+        );
+        console.log(`Patient ${pateintId} has been detected with seizure!`);
+
+        // getting contact number from database and send whatsapp message
+        const patient = await Patient.findById(pateintId);
+
+        const whatsappMessage =
+          "Patient " + patient.firstName + " has been detected with a sezuire!";
+
+        for (let i = 0; i < patient.emergencyContact.length; i++) {
+          sendWhatsappMessage(patient.emergencyContact[i].phone, whatsappMessage);
         }
       },
       {
