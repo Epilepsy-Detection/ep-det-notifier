@@ -25,10 +25,11 @@ module.exports.consumeMessages = async () => {
         const messageObj = JSON.parse(message.content.toString());
         const pateintId = messageObj.patientId;
         const storedValue = await redisService.getPatient(pateintId);
+        console.log(storedValue);
 
         if(storedValue.label == messageObj.label){
           //do nothing.
-          console.log("Patient already exists in redis");
+          console.log("Patient Value already exists and is same as new value ...");
         }
         else if(storedValue.label == null || storedValue.label != messageObj.label){
           //set new patient to redis
@@ -41,7 +42,7 @@ module.exports.consumeMessages = async () => {
            
           const message = 'Patient '+ patient.firstName + ' has been detected with a sezuire!';
           for(let i=0; i<patient.emergencyContact.length; i++){
-            sendWhatsappMessage(patient.emergencyContact[i].phone,pateintId,message);
+            sendWhatsappMessage(patient.emergencyContact[i].phone,message);
           }
         }
       },

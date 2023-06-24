@@ -20,7 +20,8 @@ module.exports.setPatient= async(profileId, label,timestamp )=> {
       profileId,{
         label: label,
         timestamp: timestamp
-      }, {EX: 600});
+      });
+    await client.expire(profileId, 600);  
     console.log(`Prediction value for patient ${profileId} is set to ${label} at ${timestamp}`);
   }
 

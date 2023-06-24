@@ -21,7 +21,7 @@ module.exports.produceMessages = async() =>{
 
         let message = {
           
-          "patientId": "641e1b6ecfd4ffd65226a778",
+          "patientId": "6404726a2cf212a075d01a9e",
           "label": "B",
           "timestamp": "2023-05-06T12:00:00.000Z",
         }

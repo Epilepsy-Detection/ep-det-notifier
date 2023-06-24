@@ -1,18 +1,27 @@
 const axios = require('axios');
 
-module.exports.sendWhatsappMessage = async (phoneNumber,patientId,message) => {
+module.exports.sendWhatsappMessage = async (phoneNumber,message) => {
     try {
       const response = await axios.post(
         `https://graph.facebook.com/${process.env.CLOUD_API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages?access_token=${process.env.CLOUD_API_ACCESS_TOKEN}`,
         {
           messaging_product: "whatsapp",
           preview_url: false,
-          recipient_type: "individual",
           to: phoneNumber,
           type: "text",
           text: {
               "body": message
-          }
+          },
+          'whatsapp': {
+            'sender': 'epicare',
+            'policy': 'fallback'
+        }
+        // type: "template",
+        // template: {
+        //   "name": "hello_world",
+        //   "language": {
+        //       "code": "en_US"
+        //   },}
         }
       );
       console.log(`Message sent to ${phoneNumber}. Response:`, response.data);
