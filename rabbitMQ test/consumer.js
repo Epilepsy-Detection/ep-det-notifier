@@ -42,7 +42,7 @@ module.exports.consumeMessages = async () => {
         const patient = await Patient.findById(pateintId);
 
         const whatsappMessage =
-          "Patient " + patient.firstName + " has been detected with a sezuire!";
+          "*Seizure Alert*\nEmergency Alert: "+ patient.firstName+ " is currently experiencing a seizure. Please take immediate action and provide necessary medical assistance.!";
 
         for (let i = 0; i < patient.emergencyContact.length; i++) {
           sendWhatsappMessage(patient.emergencyContact[i].phone, whatsappMessage);
