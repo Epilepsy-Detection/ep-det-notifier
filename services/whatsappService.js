@@ -16,12 +16,6 @@ module.exports.sendWhatsappMessage = async (phoneNumber,message) => {
             'sender': 'epicare',
             'policy': 'fallback'
         }
-        // type: "template",
-        // template: {
-        //   "name": "hello_world",
-        //   "language": {
-        //       "code": "en_US"
-        //   },}
         }
       );
       console.log(`Message sent to ${phoneNumber}. Response:`, response.data);

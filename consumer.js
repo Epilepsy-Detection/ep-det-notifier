@@ -1,7 +1,7 @@
 const amqp = require("amqplib");
-const redisService = require("../services/redisService");
+const redisService = require("./services/redisService");
 const Patient = require("ep-det-core/models/mongoose/patient");
-const { sendWhatsappMessage } = require("../services/whatsappService");
+const { sendWhatsappMessage } = require("./services/whatsappService");
 
 module.exports.consumeMessages = async () => {
   try {
